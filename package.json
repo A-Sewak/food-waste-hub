@@ -1,0 +1,13 @@
+{
+  "name": "food-waste-redistribution-hub",
+  "version": "1.0.0",
+  "description": "Hackathon prototype: explainable, safety-first matching hub for surplus food donors and recipients.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "license": "MIT"
+}

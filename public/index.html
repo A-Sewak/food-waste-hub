@@ -1,0 +1,2692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Aahar — Food Rescue Hub</title>
+
+  <style>
+    :root {
+      --green: #08783f;
+      --green-dark: #076638;
+      --green-soft: #e8f3eb;
+      --cream: #f7faf7;
+      --sidebar: #eef6f0;
+      --text: #09251a;
+      --muted: #6c8178;
+      --border: #dce8df;
+      --white: #ffffff;
+
+      --mint-card: #dff2df;
+      --yellow-card: #fff0ce;
+      --blue-card: #dcecf8;
+      --danger: #c95745;
+
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      color: var(--text);
+      background: var(--cream);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* =========================================================
+       APP SHELL
+    ========================================================= */
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* =========================================================
+       SIDEBAR
+    ========================================================= */
+
+    .sidebar {
+      width: 298px;
+      min-height: 100vh;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      padding: 38px 18px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 15px;
+      margin-bottom: 55px;
+    }
+
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: var(--green);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 25px;
+    }
+
+    .brand-name {
+      font-size: 22px;
+      font-weight: 650;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .portal-label {
+      font-size: 12px;
+      color: #6d8177;
+      letter-spacing: 1px;
+      padding: 0 15px;
+      margin-bottom: 13px;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      border: 0;
+      background: transparent;
+      width: 100%;
+      min-height: 52px;
+      border-radius: 13px;
+      padding: 0 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      color: #3e6254;
+      text-align: left;
+      transition: .2s ease;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,.65);
+    }
+
+    .nav-item.active {
+      background: white;
+      color: var(--green);
+      box-shadow: 0 7px 22px rgba(28, 80, 51, .08);
+    }
+
+    .nav-icon {
+      width: 22px;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .nav-name {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .nav-arrow {
+      font-size: 24px;
+    }
+
+    /* =========================================================
+       MAIN
+    ========================================================= */
+
+    .main {
+      margin-left: 298px;
+      width: calc(100% - 298px);
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 94px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 70px;
+      background: rgba(247,250,247,.95);
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      font-size: 14px;
+      color: #759084;
+    }
+
+    .breadcrumb strong {
+      color: var(--text);
+      font-weight: 650;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .notification {
+      position: relative;
+      width: 43px;
+      height: 43px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: white;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+    }
+
+    .notification-dot {
+      position: absolute;
+      right: 9px;
+      top: 8px;
+      width: 6px;
+      height: 6px;
+      background: #e65f67;
+      border-radius: 50%;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .avatar {
+      width: 39px;
+      height: 39px;
+      background: #f4c7bd;
+      color: #974a3e;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .profile-name {
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .profile-role {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .profile-arrow {
+      font-size: 22px;
+      margin-left: 18px;
+    }
+
+    /* =========================================================
+       CONTENT
+    ========================================================= */
+
+    .content {
+      max-width: 1380px;
+      margin: auto;
+      padding: 53px 92px 80px;
+    }
+
+    .eyebrow {
+      color: var(--green);
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 39px;
+      line-height: 1.08;
+      letter-spacing: -1.7px;
+      font-weight: 430;
+      margin: 0;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 16px;
+      margin: 10px 0 0;
+    }
+
+    .page-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      margin-bottom: 38px;
+    }
+
+    .primary-button {
+      border: 0;
+      background: var(--green);
+      color: white;
+      padding: 14px 21px;
+      border-radius: 11px;
+      font-weight: 650;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      transition: .2s;
+    }
+
+    .primary-button:hover {
+      background: var(--green-dark);
+      transform: translateY(-1px);
+    }
+
+    /* =========================================================
+       SUBSCRIBER
+    ========================================================= */
+
+    .impact-card {
+      min-height: 307px;
+      border-radius: 0;
+      background: #126f43;
+      color: white;
+      padding: 38px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .impact-card::before {
+      content: "";
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border: 1px solid rgba(200,255,218,.15);
+      border-radius: 50%;
+      right: -150px;
+      top: -190px;
+    }
+
+    .impact-card::after {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      border: 1px solid rgba(200,255,218,.25);
+      border-radius: 50%;
+      right: 165px;
+      top: 72px;
+    }
+
+    .impact-pill {
+      display: inline-block;
+      background: rgba(255,255,255,.18);
+      padding: 7px 13px;
+      border-radius: 20px;
+      font-family: monospace;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 26px;
+    }
+
+    .impact-title {
+      font-size: 34px;
+      letter-spacing: -1.3px;
+      font-weight: 400;
+      margin-bottom: 9px;
+    }
+
+    .impact-title span {
+      color: #b7edc9;
+    }
+
+    .impact-description {
+      color: #d5efe0;
+      max-width: 520px;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 44px;
+      margin-top: 37px;
+    }
+
+    .stat-number {
+      font-size: 23px;
+      font-weight: 700;
+    }
+
+    .stat-label {
+      color: #bde6ca;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .impact-icon {
+      position: absolute;
+      right: 165px;
+      top: 95px;
+      font-size: 62px;
+      color: #b9ebca;
+      z-index: 2;
+    }
+
+    .impact-growth {
+      position: absolute;
+      right: 55px;
+      top: 123px;
+      z-index: 2;
+    }
+
+    .growth-number {
+      font-size: 23px;
+      font-weight: 700;
+    }
+
+    .growth-label {
+      font-size: 12px;
+      color: #c9ecd5;
+      line-height: 1.3;
+    }
+
+    /* =========================================================
+       LIVE FEED
+    ========================================================= */
+
+    .section {
+      margin-top: 51px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: 21px;
+      letter-spacing: -.6px;
+      font-weight: 450;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .refresh {
+      color: var(--green);
+      border: 0;
+      background: transparent;
+      font-weight: 650;
+    }
+
+    .feed {
+      display: grid;
+      gap: 10px;
+    }
+
+    .feed-item {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 17px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .feed-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      background: var(--green-soft);
+    }
+
+    .feed-info {
+      flex: 1;
+    }
+
+    .feed-title {
+      font-weight: 650;
+      font-size: 14px;
+    }
+
+    .feed-meta {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .status {
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .status-green {
+      background: #dcf4e3;
+      color: #177341;
+    }
+
+    .status-yellow {
+      background: #fff0c9;
+      color: #936018;
+    }
+
+    .status-blue {
+      background: #dfedfa;
+      color: #286590;
+    }
+
+    /* =========================================================
+       WORKER PORTAL
+    ========================================================= */
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .action-card {
+      min-height: 211px;
+      padding: 25px;
+      border-radius: 13px;
+      border: 1px solid transparent;
+      display: flex;
+      flex-direction: column;
+      transition: .2s;
+      cursor: pointer;
+    }
+
+    .action-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 13px 30px rgba(30,70,48,.08);
+    }
+
+    .action-green {
+      background: var(--mint-card);
+    }
+
+    .action-yellow {
+      background: var(--yellow-card);
+    }
+
+    .action-blue {
+      background: var(--blue-card);
+    }
+
+    .action-icon {
+      width: 52px;
+      height: 52px;
+      background: rgba(255,255,255,.7);
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      font-size: 25px;
+      margin-bottom: 20px;
+    }
+
+    .action-title {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .action-description {
+      color: #72857d;
+      font-size: 13px;
+      margin-top: 7px;
+    }
+
+    .action-arrow {
+      margin-top: auto;
+      align-self: flex-end;
+      font-size: 29px;
+    }
+
+    /* =========================================================
+       CHECKLIST
+    ========================================================= */
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 2fr 1.25fr;
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 25px;
+    }
+
+    .panel-title {
+      font-size: 20px;
+      font-weight: 450;
+    }
+
+    .panel-sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 5px;
+      margin-bottom: 20px;
+    }
+
+    .check-item {
+      min-height: 72px;
+      border-top: 1px solid #e7eee9;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .check {
+      width: 35px;
+      height: 35px;
+      border-radius: 10px;
+      border: 1px solid #bcd7c5;
+      display: grid;
+      place-items: center;
+      color: var(--green);
+    }
+
+    .check.done {
+      background: #dcf4e3;
+      border-color: transparent;
+    }
+
+    .check-info {
+      flex: 1;
+    }
+
+    .check-title {
+      font-weight: 650;
+    }
+
+    .check-time {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .next-badge {
+      padding: 7px 12px;
+      background: #fff0cb;
+      color: #91601a;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .done-badge {
+      padding: 7px 12px;
+      background: #ddf3e3;
+      color: #247346;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .safety-panel {
+      background: #fff4dc;
+      border-color: #f2dfb7;
+    }
+
+    .safety-label {
+      display: inline-block;
+      color: white;
+      background: #f4dfad;
+      border-radius: 20px;
+      padding: 5px 10px;
+      font-size: 10px;
+      font-weight: 800;
+      margin-bottom: 27px;
+    }
+
+    .temperature {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 34px;
+    }
+
+    .temperature-number {
+      font-size: 20px;
+      color: #a26a14;
+      font-weight: 650;
+    }
+
+    .temperature-text {
+      color: #917c5a;
+      font-size: 12px;
+    }
+
+    /* =========================================================
+       PORTAL DASHBOARDS
+    ========================================================= */
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 15px;
+    }
+
+    .metric {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 23px;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .metric-value {
+      font-size: 29px;
+      font-weight: 650;
+      margin-top: 10px;
+    }
+
+    .metric-change {
+      color: var(--green);
+      font-size: 12px;
+      margin-top: 7px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      padding: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table td {
+      padding: 16px 13px;
+      font-size: 13px;
+      border-bottom: 1px solid #edf2ee;
+    }
+
+    /* =========================================================
+       MOBILE
+    ========================================================= */
+
+    .mobile-menu {
+      display: none;
+    }
+
+    @media (max-width: 1100px) {
+      .sidebar {
+        width: 235px;
+      }
+
+      .main {
+        margin-left: 235px;
+        width: calc(100% - 235px);
+      }
+
+      .content {
+        padding-left: 45px;
+        padding-right: 45px;
+      }
+
+      .topbar {
+        padding: 0 45px;
+      }
+
+      .action-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+
+      .impact-icon {
+        right: 90px;
+      }
+
+      .impact-growth {
+        right: 30px;
+      }
+    }
+
+    @media (max-width: 750px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: .25s;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .mobile-menu {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid var(--border);
+        background: white;
+        border-radius: 10px;
+      }
+
+      .topbar {
+        padding: 0 20px;
+        height: 72px;
+      }
+
+      .breadcrumb {
+        display: none;
+      }
+
+      .content {
+        padding: 35px 20px;
+      }
+
+      h1 {
+        font-size: 31px;
+      }
+
+      .page-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .impact-card {
+        padding: 27px;
+        min-height: 370px;
+      }
+
+      .impact-icon,
+      .impact-growth {
+        display: none;
+      }
+
+      .stats {
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .metric-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .profile-role {
+        display: none;
+      }
+
+      .profile-arrow {
+        margin-left: 3px;
+      }
+    }
+
+    /* =========================================================
+       CONNECTION STATUS & TOASTS
+    ========================================================= */
+    .connection-status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 20px;
+      margin-right: 8px;
+      white-space: nowrap;
+    }
+    .status-online {
+      background: #e0f6e7;
+      color: #16723f;
+      border: 1px solid #b7e8c5;
+    }
+    .status-offline {
+      background: #fde8e5;
+      color: #b52a1a;
+      border: 1px solid #f9c6be;
+    }
+    .status-connecting {
+      background: #fff6e0;
+      color: #926418;
+      border: 1px solid #fde3a7;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .status-online .status-dot {
+      box-shadow: 0 0 6px #16723f;
+    }
+    .offline-hint {
+      font-weight: normal;
+      opacity: 0.85;
+      font-size: 11px;
+    }
+
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 420px;
+    }
+    .toast {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #192e22;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      animation: slideInToast 0.25s ease-out;
+      transition: opacity 0.3s;
+    }
+    .toast-success { border-left: 4px solid #2ecc71; }
+    .toast-error { border-left: 4px solid #e74c3c; background: #2f1715; }
+    .toast-info { border-left: 4px solid #3498db; }
+    .toast button {
+      background: none;
+      border: none;
+      color: #9cb5a6;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+    .toast.fade-out { opacity: 0; }
+    @keyframes slideInToast {
+      from { transform: translateX(50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* =========================================================
+       MODAL DIALOG
+    ========================================================= */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(9, 37, 26, 0.55);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal {
+      background: white;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+      animation: modalPop 0.2s ease-out;
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-header h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 650;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .modal-body {
+      padding: 24px;
+    }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      background: #fafcfa;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+
+    /* Form controls */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 650;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #fbfdfb;
+      font-size: 13.5px;
+      color: var(--text);
+      transition: border 0.15s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--green);
+      background: white;
+    }
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+    .form-row .form-group {
+      flex: 1;
+    }
+    .form-hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .secondary-button {
+      background: #eef4f0;
+      color: #1f3a2c;
+      border: 1px solid var(--border);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .secondary-button:hover {
+      background: #e2ede5;
+    }
+
+    .btn-small {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .btn-accept {
+      background: #e1f5e8;
+      color: #136938;
+      border: 1px solid #bde6cc;
+    }
+    .btn-accept:hover {
+      background: #c8edd3;
+    }
+    .btn-cancel {
+      background: #fde8e5;
+      color: #b52a1a;
+      border: 1px solid #f8c8c1;
+    }
+    .btn-cancel:hover {
+      background: #f9d0cb;
+    }
+    .btn-otp {
+      background: #e2f0fc;
+      color: #175d94;
+      border: 1px solid #c2def6;
+    }
+    .btn-otp:hover {
+      background: #c9e4fb;
+    }
+    .btn-verify {
+      background: #fff0cb;
+      color: #8c5d14;
+      border: 1px solid #f6dd9f;
+    }
+    .btn-verify:hover {
+      background: #fae4ad;
+    }
+    .otp-display {
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      padding: 4px 8px;
+      background: #fff2d6;
+      color: #925805;
+      border-radius: 6px;
+      border: 1px dashed #d6a246;
+    }
+    .badge-gray {
+      background: #eef2ef;
+      color: #5d7067;
+    }
+    .badge-green {
+      background: #dcf4e3;
+      color: #177341;
+    }
+    .badge-blue {
+      background: #dfedfa;
+      color: #286590;
+    }
+    .reasons-list {
+      margin: 6px 0 0;
+      padding-left: 18px;
+      font-size: 11.5px;
+      color: #4b6657;
+    }
+    .reasons-list li {
+      margin-bottom: 2px;
+    }
+    .warning-box {
+      background: #fff8e8;
+      border-left: 3px solid #f39c12;
+      padding: 6px 10px;
+      font-size: 11px;
+      color: #8c5700;
+      margin-top: 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- =========================================================
+       SIDEBAR
+  ========================================================== -->
+
+  <aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+      <div class="brand-logo">⌁</div>
+
+      <div>
+        <div class="brand-name">Aahar</div>
+        <div class="brand-sub">Food rescue hub</div>
+      </div>
+    </div>
+
+    <div class="portal-label">Portals</div>
+
+    <nav class="nav">
+
+      <button class="nav-item active" data-page="subscriber">
+        <span class="nav-icon">♧</span>
+        <span class="nav-name">Subscriber</span>
+        <span class="nav-arrow">›</span>
+      </button>
+
+      <button class="nav-item" data-page="worker">
+        <span class="nav-icon">◇</span>
+        <span class="nav-name">Store / NGO workers</span>
+        <span class="nav-arrow">›</span>
+      </button>
+
+      <button class="nav-item" data-page="manager">
+        <span class="nav-icon">▥</span>
+        <span class="nav-name">Managers</span>
+        <span class="nav-arrow">›</span>
+      </button>
+
+      <button class="nav-item" data-page="admin">
+        <span class="nav-icon">♢</span>
+        <span class="nav-name">Admins</span>
+        <span class="nav-arrow">›</span>
+      </button>
+
+      <button class="nav-item" data-page="delivery">
+        <span class="nav-icon">♧</span>
+        <span class="nav-name">Delivery</span>
+        <span class="nav-arrow">›</span>
+      </button>
+
+    </nav>
+
+  </aside>
+
+
+  <!-- =========================================================
+       MAIN
+  ========================================================== -->
+
+  <main class="main">
+
+    <header class="topbar">
+
+      <button
+        class="mobile-menu"
+        onclick="toggleSidebar()"
+      >
+        ☰
+      </button>
+
+      <div class="breadcrumb">
+        <span>Aahar</span>
+        <span>›</span>
+        <strong id="breadcrumbPage">Subscriber</strong>
+      </div>
+
+      <div class="top-actions">
+
+        <div id="connectionStatus" class="connection-status status-connecting">
+          <span class="status-dot"></span>
+          <span id="connectionText">Checking backend...</span>
+        </div>
+
+        <button class="notification">
+          ♧
+          <span class="notification-dot"></span>
+        </button>
+
+        <div class="profile">
+
+          <div class="avatar">MC</div>
+
+          <div>
+            <div class="profile-name">Maya Chen</div>
+            <div class="profile-role">Community supporter</div>
+          </div>
+
+          <span class="profile-arrow">›</span>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- =======================================================
+         DYNAMIC PAGE
+    ======================================================== -->
+
+    <div class="content" id="appContent"></div>
+
+  </main>
+
+</div>
+
+<div id="modalContainer" class="modal-overlay" style="display:none;"></div>
+<div id="toastContainer" class="toast-container"></div>
+
+<script>
+  let currentPage = "subscriber";
+  const appContent = document.getElementById("appContent");
+  const breadcrumbPage = document.getElementById("breadcrumbPage");
+
+  // If served over http/https (except VS Code Live Server 5500), use same-origin relative URLs ("").
+  // Only fallback to http://localhost:3000 if opened directly as file:// or Live Server :5500.
+  const isDirectFileOrLiveServer = window.location.protocol === "file:" || window.location.port === "5500";
+  const API_BASE = isDirectFileOrLiveServer ? "http://localhost:3000" : "";
+  let isBackendConnected = false;
+
+  /* ==========================================================
+     BACKEND HEALTH & API CLIENT
+  ========================================================== */
+  async function checkBackendHealth() {
+    const statusEl = document.getElementById("connectionStatus");
+    const textEl = document.getElementById("connectionText");
+    try {
+      const res = await fetch(`${API_BASE}/api/analytics`, { cache: "no-store" });
+      if (res.ok) {
+        isBackendConnected = true;
+        if (statusEl) {
+          statusEl.className = "connection-status status-online";
+          textEl.textContent = "Backend Online";
+        }
+        return true;
+      }
+    } catch (e) {}
+
+    isBackendConnected = false;
+    if (statusEl) {
+      statusEl.className = "connection-status status-offline";
+      textEl.innerHTML = `Backend Offline <span class="offline-hint">(Run: <code>node server.js</code>)</span>`;
+    }
+    return false;
+  }
+
+  async function api(path, options = {}) {
+    const url = path.startsWith("http") ? path : `${API_BASE}${path}`;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(options.headers || {})
+        },
+        ...options
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const errorMsg = data.error || `Error ${response.status}: Request failed`;
+        showToast(errorMsg, "error");
+        throw new Error(errorMsg);
+      }
+      return data;
+    } catch (error) {
+      console.error(`API Error [${options.method || 'GET'} ${path}]:`, error);
+      if (!isBackendConnected && error.name === "TypeError") {
+        showToast("Cannot connect to backend. Make sure 'node server.js' is running on port 3000.", "error");
+      }
+      return null;
+    }
+  }
+
+  /* ==========================================================
+     TOAST NOTIFICATIONS
+  ========================================================== */
+  function showToast(message, type = "info") {
+    const container = document.getElementById("toastContainer");
+    if (!container) return;
+    const toast = document.createElement("div");
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+      <span>${escapeHtml(message)}</span>
+      <button onclick="this.parentElement.remove()">✕</button>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add("fade-out");
+      setTimeout(() => toast.remove(), 300);
+    }, 4500);
+  }
+
+  /* ==========================================================
+     MODAL DIALOGS
+  ========================================================== */
+  function openModal(title, bodyHtml, onConfirm = null, confirmText = "Confirm") {
+    const container = document.getElementById("modalContainer");
+    container.innerHTML = `
+      <div class="modal">
+        <div class="modal-header">
+          <h3>${escapeHtml(title)}</h3>
+          <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">${bodyHtml}</div>
+        <div class="modal-footer">
+          <button class="secondary-button" onclick="closeModal()">Cancel</button>
+          ${onConfirm ? `<button class="primary-button" id="modalConfirmBtn">${escapeHtml(confirmText)}</button>` : ""}
+        </div>
+      </div>
+    `;
+    container.style.display = "flex";
+    if (onConfirm) {
+      document.getElementById("modalConfirmBtn").onclick = () => onConfirm();
+    }
+  }
+
+  function closeModal() {
+    const container = document.getElementById("modalContainer");
+    container.style.display = "none";
+    container.innerHTML = "";
+  }
+
+  /* ==========================================================
+     NAVIGATION
+  ========================================================== */
+  document.querySelectorAll(".nav-item").forEach(item => {
+    item.addEventListener("click", () => {
+      document.querySelectorAll(".nav-item").forEach(x => x.classList.remove("active"));
+      item.classList.add("active");
+      currentPage = item.dataset.page;
+      breadcrumbPage.textContent = item.querySelector(".nav-name").textContent;
+      renderPage(currentPage);
+      document.getElementById("sidebar").classList.remove("open");
+    });
+  });
+
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("open");
+  }
+
+  /* ==========================================================
+     PAGE ROUTER
+  ========================================================== */
+  async function renderPage(page) {
+    await checkBackendHealth();
+
+    if (page === "subscriber") {
+      await renderSubscriber();
+      return;
+    }
+    if (page === "worker") {
+      await renderWorker();
+      return;
+    }
+    if (page === "manager") {
+      await renderManager();
+      return;
+    }
+    if (page === "admin") {
+      await renderAdmin();
+      return;
+    }
+    if (page === "delivery") {
+      await renderDelivery();
+      return;
+    }
+  }
+
+  /* ==========================================================
+     SUBSCRIBER
+  ========================================================== */
+  async function renderSubscriber() {
+    const [analytics, matches] = await Promise.all([
+      api("/api/analytics"),
+      api("/api/matches")
+    ]);
+
+    const deliveredKg = analytics?.totalDeliveredKg || 0;
+    const mealsShared = Math.round(12840 + (deliveredKg * 2.5));
+    const foodRescuedKg = (6842 + deliveredKg).toLocaleString();
+    const co2AvoidedT = (17.2 + ((deliveredKg * 2.5) / 1000)).toFixed(1);
+
+    appContent.innerHTML = `
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Community impact · Live</div>
+          <h1>Every rescued meal matters.</h1>
+          <div class="subtitle">See how surplus food is moving through your community today.</div>
+        </div>
+        <button class="primary-button" onclick="runMatching()">
+          ✨ Run Matching Engine
+        </button>
+      </div>
+
+      <section class="impact-card">
+        <div class="impact-pill">THIS MONTH · NORTH ZONE</div>
+        <div class="impact-title">Good food, <span>going further.</span></div>
+        <div class="impact-description">
+          Aahar has kept edible food in kitchens instead of landfills – with every handoff visible.
+        </div>
+        <div class="stats">
+          <div>
+            <div class="stat-number">${mealsShared.toLocaleString()}</div>
+            <div class="stat-label">meals shared</div>
+          </div>
+          <div>
+            <div class="stat-number">${foodRescuedKg} kg</div>
+            <div class="stat-label">food rescued</div>
+          </div>
+          <div>
+            <div class="stat-number">${co2AvoidedT} t</div>
+            <div class="stat-label">CO₂ avoided</div>
+          </div>
+        </div>
+        <div class="impact-icon">♧</div>
+        <div class="impact-growth">
+          <div class="growth-number">+24%</div>
+          <div class="growth-label">impact this<br>quarter</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <div class="section-title">Live rescue feed</div>
+            <div class="section-subtitle">What is moving right now across the network</div>
+          </div>
+          <button class="refresh" onclick="renderSubscriber()">⟳ &nbsp;Refresh</button>
+        </div>
+
+        <div id="liveFeed" class="feed">
+          ${renderFeedItems(matches)}
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">Your community badge</div>
+        <div class="section-subtitle">Maya's profile · Community supporter</div>
+      </section>
+    `;
+  }
+
+  function renderFeedItems(matches) {
+    if (!matches || !matches.length) {
+      return `
+        <div class="feed-item" style="justify-content:space-between;">
+          <div class="feed-info">
+            <div class="feed-title">No matches active yet</div>
+            <div class="feed-meta">Run the matching engine to pair surplus food with community demand.</div>
+          </div>
+          <button class="btn-small btn-accept" onclick="runMatching()">Run Engine</button>
+        </div>
+      `;
+    }
+    const recent = matches.filter(m => m.status !== 'cancelled').slice(-6).reverse();
+    if (!recent.length) {
+      return `<div class="feed-item"><div class="feed-info"><div class="feed-title">No active matches at the moment.</div></div></div>`;
+    }
+    return recent.map(m => {
+      const donor = m.donors?.[0]?.name || 'Donor';
+      const recipient = m.recipient?.name || 'Recipient';
+      const qty = m.quantityCoveredKg || 0;
+      const statusClass = m.status === 'delivered' ? 'status-green' : (m.status === 'both_accepted' ? 'status-yellow' : 'status-blue');
+      return `
+        <div class="feed-item">
+          <div class="feed-icon">◇</div>
+          <div class="feed-info">
+            <div class="feed-title">${escapeHtml(donor)} → ${escapeHtml(recipient)}</div>
+            <div class="feed-meta">${qty}kg food rescue · ${escapeHtml(m.status)}</div>
+          </div>
+          <span class="status ${statusClass}">${escapeHtml(m.status)}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  /* ==========================================================
+     WORKER PORTAL
+  ========================================================== */
+  async function renderWorker() {
+    const [donations, demand, matches] = await Promise.all([
+      api("/api/donations"),
+      api("/api/demand"),
+      api("/api/matches")
+    ]);
+
+    const pendingMatchesCount = (matches || []).filter(m => m.status === "proposed").length;
+
+    appContent.innerHTML = `
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Worker home · Green Basket Market</div>
+          <h1>What needs doing today?</h1>
+          <div class="subtitle">Three clear actions. Connects directly to live operations.</div>
+        </div>
+      </div>
+
+      <div class="action-grid">
+        <div class="action-card action-green" onclick="recordSurplus()">
+          <div class="action-icon">◇</div>
+          <div class="action-title">Record surplus food</div>
+          <div class="action-description">Log surplus food that can be rescued today</div>
+          <div class="action-arrow">→</div>
+        </div>
+
+        <div class="action-card action-yellow" onclick="requestDrop()">
+          <div class="action-icon">▣</div>
+          <div class="action-title">Request a food drop</div>
+          <div class="action-description">Tell nearby donors what your kitchen needs</div>
+          <div class="action-arrow">→</div>
+        </div>
+
+        <div class="action-card action-blue" onclick="showMatches()">
+          <div class="action-icon">✓</div>
+          <div class="action-title">Review proposed matches</div>
+          <div class="action-description">${pendingMatchesCount} proposal(s) waiting for acceptance</div>
+          <div class="action-arrow">→</div>
+        </div>
+      </div>
+
+      <div class="two-column">
+        <div class="panel">
+          <div class="panel-title">Today's checklist</div>
+          <div class="panel-sub">Keep every handoff safe and verified</div>
+
+          <div class="check-item">
+            <div class="check done">✓</div>
+            <div class="check-info">
+              <div class="check-title">Morning fridge check</div>
+              <div class="check-time">Completed at 8:12 AM</div>
+            </div>
+            <span class="done-badge">Done</span>
+          </div>
+
+          <div class="check-item">
+            <div class="check">♨</div>
+            <div class="check-info">
+              <div class="check-title">Tag chilled donations</div>
+              <div class="check-time">Ensure 2–8°C tag is attached before matching</div>
+            </div>
+            <span class="next-badge">Active</span>
+          </div>
+
+          <div class="check-item">
+            <div class="check">□</div>
+            <div class="check-info">
+              <div class="check-title">Confirm pickup handoffs</div>
+              <div class="check-time">${pendingMatchesCount} matches awaiting review</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel safety-panel">
+          <span class="safety-label">SAFETY FIRST</span>
+          <div class="panel-title">Cold chain reminder</div>
+          <div class="panel-sub">Chilled donations need a clear 2–8°C tag before they can be matched.</div>
+          <div class="temperature">
+            <div style="font-size:26px">♨</div>
+            <div class="temperature-number">2–8°C</div>
+            <div class="temperature-text">recommended chilled range</div>
+          </div>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="panel">
+          <div class="section-head">
+            <div>
+              <div class="panel-title">Active Surplus Inventory</div>
+              <div class="panel-sub">Current donations registered in the system</div>
+            </div>
+            <button class="primary-button" onclick="recordSurplus()">+ Record Surplus</button>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Food Item</th>
+                  <th>Quantity</th>
+                  <th>Storage</th>
+                  <th>Region</th>
+                  <th>Expires in</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${renderWorkerDonationsTable(donations)}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="panel">
+          <div class="section-head">
+            <div>
+              <div class="panel-title">Active Demand Requests</div>
+              <div class="panel-sub">Food needed by recipient organizations</div>
+            </div>
+            <button class="primary-button" onclick="requestDrop()">+ Request Drop</button>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Food Needed</th>
+                  <th>Quantity</th>
+                  <th>Region</th>
+                  <th>Needed within</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${renderWorkerDemandTable(demand)}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderWorkerDonationsTable(donations) {
+    if (!donations || !donations.length) {
+      return `<tr><td colspan="6" style="text-align:center; color:var(--muted); padding:16px;">No surplus donations logged yet.</td></tr>`;
+    }
+    return donations.slice(-8).reverse().map(d => `
+      <tr>
+        <td><strong>${escapeHtml(d.foodType)}</strong></td>
+        <td>${d.quantityKg} kg</td>
+        <td>${escapeHtml(d.storageType)}${d.tempRange ? ` (${escapeHtml(d.tempRange)})` : ''}</td>
+        <td>${escapeHtml(d.region)}</td>
+        <td>${fmtHours(d.expiryAt)}</td>
+        <td><span class="status ${d.status === 'completed' ? 'status-green' : (d.status === 'reserved' ? 'status-yellow' : 'status-blue')}">${escapeHtml(d.status)}</span></td>
+      </tr>
+    `).join("");
+  }
+
+  function renderWorkerDemandTable(demand) {
+    if (!demand || !demand.length) {
+      return `<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:16px;">No demand requests logged yet.</td></tr>`;
+    }
+    return demand.slice(-8).reverse().map(d => `
+      <tr>
+        <td><strong>${escapeHtml(d.foodType)}</strong></td>
+        <td>${d.quantityKg} kg</td>
+        <td>${escapeHtml(d.region)}</td>
+        <td>${fmtHours(d.neededBy)}</td>
+        <td><span class="status ${d.status === 'fulfilled' ? 'status-green' : 'status-yellow'}">${escapeHtml(d.status)}</span></td>
+      </tr>
+    `).join("");
+  }
+
+
+  /* ==========================================================
+     MANAGER
+  ========================================================== */
+  async function renderManager() {
+    const [analytics, matches] = await Promise.all([
+      api("/api/analytics"),
+      api("/api/matches")
+    ]);
+
+    const data = analytics || {
+      totalDeliveredKg: 0,
+      totalMatchesProposed: 0,
+      totalMatchesDelivered: 0,
+      totalMatchesCancelled: 0
+    };
+
+    appContent.innerHTML = `
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Operations · Live overview</div>
+          <h1>Community operations.</h1>
+          <div class="subtitle">See how food is moving across the network in real-time.</div>
+        </div>
+        <button class="primary-button" onclick="runMatching()">
+          ✦ Run matching engine
+        </button>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">Food rescued</div>
+          <div class="metric-value">${data.totalDeliveredKg} kg</div>
+          <div class="metric-change">↑ Community impact</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Matches proposed</div>
+          <div class="metric-value">${data.totalMatchesProposed}</div>
+          <div class="metric-change">Live engine proposals</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Completed deliveries</div>
+          <div class="metric-value">${data.totalMatchesDelivered}</div>
+          <div class="metric-change">Successful handoffs</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Cancelled matches</div>
+          <div class="metric-value">${data.totalMatchesCancelled}</div>
+          <div class="metric-change">Audited cancellations</div>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="panel">
+          <div class="section-head">
+            <div>
+              <div class="panel-title">Matching Control Room</div>
+              <div class="panel-sub">Inspect matches, mutual acceptance, and active handoffs</div>
+            </div>
+            <button class="refresh" onclick="renderManager()">⟳ Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Match</th>
+                  <th>Donor(s)</th>
+                  <th>Recipient</th>
+                  <th>Food & Qty</th>
+                  <th>Score</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${renderManagerMatchesRows(matches)}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderManagerMatchesRows(matches) {
+    if (!matches || !matches.length) {
+      return `<tr><td colspan="7" style="text-align:center; color:var(--muted); padding:28px;">No matches generated yet. Click "✦ Run matching engine" to evaluate supply and demand.</td></tr>`;
+    }
+    return matches.map(m => {
+      const donorNames = (m.donors || []).map(d => escapeHtml(d.name)).join(", ") || "—";
+      const recipientName = m.recipient?.name ? escapeHtml(m.recipient.name) : "—";
+      const summary = (m.donations || []).map(d => `${d.quantityKg}kg ${escapeHtml(d.foodType)}`).join(" + ") || `${m.quantityCoveredKg}kg`;
+
+      let actionsHtml = "";
+      let statusBadge = `<span class="status status-blue">${escapeHtml(m.status)}</span>`;
+
+      if (m.status === "proposed") {
+        actionsHtml = `
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button class="btn-small btn-accept" onclick="acceptMatch('${m.id}', 'donor')">${m.donorAccepted ? '✓ Donor' : 'Accept (Donor)'}</button>
+            <button class="btn-small btn-accept" onclick="acceptMatch('${m.id}', 'recipient')">${m.recipientAccepted ? '✓ Recip' : 'Accept (Recip)'}</button>
+            <button class="btn-small btn-cancel" onclick="cancelMatchPrompt('${m.id}')">✕</button>
+          </div>
+        `;
+      } else if (m.status === "both_accepted") {
+        statusBadge = `<span class="status status-yellow">Both Accepted</span>`;
+        actionsHtml = `
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="otp-display">${escapeHtml(m.otp)}</span>
+            <button class="btn-small btn-otp" onclick="openOtpModal('${m.id}', '${m.otp}')">Verify OTP</button>
+          </div>
+        `;
+      } else if (m.status === "delivered") {
+        statusBadge = `<span class="status status-green">Delivered ✓</span>`;
+        actionsHtml = `<span style="color:var(--green); font-size:12px; font-weight:600;">Handoff Complete</span>`;
+      } else if (m.status === "cancelled") {
+        statusBadge = `<span class="status" style="background:#fde8e5; color:#b52a1a;">Cancelled</span>`;
+        actionsHtml = `<span style="color:var(--muted); font-size:11px;">${escapeHtml(m.cancellationReason || 'Cancelled')}</span>`;
+      }
+
+      return `
+        <tr>
+          <td><strong>#${m.id.slice(0,8)}</strong></td>
+          <td>${donorNames}</td>
+          <td>${recipientName}</td>
+          <td>${summary}</td>
+          <td>${m.score || 0}</td>
+          <td>${statusBadge}</td>
+          <td>${actionsHtml}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  /* ==========================================================
+     ADMIN
+  ========================================================== */
+  async function renderAdmin() {
+    const [donors, recipients, custody] = await Promise.all([
+      api("/api/donors"),
+      api("/api/recipients"),
+      api("/api/custody-log")
+    ]);
+
+    appContent.innerHTML = `
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Governance · Safety</div>
+          <h1>Keep the network trusted.</h1>
+          <div class="subtitle">Verification, reliability scoring, liability waivers, and immutable audit logs.</div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="secondary-button" onclick="registerRecipientModal()">+ Register Recipient</button>
+          <button class="primary-button" onclick="registerDonorModal()">+ Register Donor</button>
+        </div>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">Registered donors</div>
+          <div class="metric-value">${donors?.length || 0}</div>
+          <div class="metric-change">Network supply partners</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Registered recipients</div>
+          <div class="metric-value">${recipients?.length || 0}</div>
+          <div class="metric-change">Community food hubs</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Audit events tracked</div>
+          <div class="metric-value">${custody?.length || 0}</div>
+          <div class="metric-change">Immutable custody trail</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Institutional verification</div>
+          <div class="metric-value">Active</div>
+          <div class="metric-change">Gate for >30kg surplus</div>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="panel">
+          <div class="section-head">
+            <div>
+              <div class="panel-title">Registered Donors & Verification Status</div>
+              <div class="panel-sub">Donations over 30kg require institutional verification tier</div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Donor Name</th>
+                  <th>Type</th>
+                  <th>Region</th>
+                  <th>Tier</th>
+                  <th>Reliability</th>
+                  <th>Handoffs</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${(donors || []).map(d => `
+                  <tr>
+                    <td><strong>${escapeHtml(d.name)}</strong></td>
+                    <td>${escapeHtml(d.type || 'Donor')}</td>
+                    <td>${escapeHtml(d.region)}</td>
+                    <td>
+                      <span class="status ${d.verificationTier === 'institutional' ? 'status-green' : (d.verificationTier === 'basic' ? 'status-yellow' : 'status-blue')}">
+                        ${d.verificationTier}
+                      </span>
+                    </td>
+                    <td>${d.reliabilityScore || 100}%</td>
+                    <td>${d.completedHandoffs || 0}</td>
+                    <td>
+                      ${d.verificationTier !== 'institutional' ? `
+                        <button class="btn-small btn-verify" onclick="verifyDonor('${d.id}', '${escapeHtml(d.name)}')">Verify Institutional</button>
+                      ` : `<span style="color:var(--green); font-size:12px; font-weight:600;">Verified ✓</span>`}
+                    </td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="panel">
+          <div class="section-head">
+            <div>
+              <div class="panel-title">Registered Community Recipients</div>
+              <div class="panel-sub">Capacity, storage capabilities, and liability compliance</div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Recipient Name</th>
+                  <th>Region</th>
+                  <th>Storage Capabilities</th>
+                  <th>Capacity</th>
+                  <th>Liability Waiver</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${(recipients || []).map(r => `
+                  <tr>
+                    <td><strong>${escapeHtml(r.name)}</strong></td>
+                    <td>${escapeHtml(r.region)}</td>
+                    <td>${(r.storageCapability || []).join(", ")}</td>
+                    <td>${r.pickupCapacityKg || 50} kg</td>
+                    <td>
+                      <span class="status ${r.waiverAccepted ? 'status-green' : 'status-yellow'}">
+                        ${r.waiverAccepted ? 'Signed ✓' : 'Unsigned'}
+                      </span>
+                    </td>
+                    <td>
+                      ${!r.waiverAccepted ? `
+                        <button class="btn-small btn-accept" onclick="acceptWaiver('${r.id}')">Sign Waiver</button>
+                      ` : `<span style="color:var(--muted); font-size:12px;">Compliant</span>`}
+                    </td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="panel">
+          <div class="section-head">
+            <div>
+              <div class="panel-title">Custody & Audit Trail</div>
+              <div class="panel-sub">Every allocation, acceptance, handoff, and cancellation recorded</div>
+            </div>
+            <button class="refresh" onclick="renderAdmin()">⟳ Refresh</button>
+          </div>
+          <div class="table-wrap" style="max-height:380px; overflow-y:auto;">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Event</th>
+                  <th>Actor</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${renderCustodyRows(custody)}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderCustodyRows(custody) {
+    if (!custody || !custody.length) {
+      return `<tr><td colspan="4" style="text-align:center; color:var(--muted); padding:20px;">No custody events logged yet.</td></tr>`;
+    }
+    return custody.map(c => `
+      <tr>
+        <td style="white-space:nowrap; font-size:12px; color:var(--muted);">${new Date(c.timestamp).toLocaleTimeString()}</td>
+        <td><strong style="font-size:12px;">${escapeHtml(c.event)}</strong></td>
+        <td><span class="status status-blue" style="font-size:11px;">${escapeHtml(c.actor)}</span></td>
+        <td style="font-size:12.5px;">${escapeHtml(c.details || '')}</td>
+      </tr>
+    `).join("");
+  }
+
+  /* ==========================================================
+     DELIVERY
+  ========================================================== */
+  async function renderDelivery() {
+    const matches = await api("/api/matches");
+    const active = (matches || []).filter(m => m.status === "both_accepted" || m.status === "dispatched" || m.status === "proposed");
+    const pendingHandover = active.filter(m => m.status === "both_accepted" || m.status === "dispatched");
+
+    appContent.innerHTML = `
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Delivery · Pickup network</div>
+          <h1>Ready for the next handoff?</h1>
+          <div class="subtitle">Keep every pickup safe, visible and verified via recipient OTP confirmation.</div>
+        </div>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">Pickups waiting</div>
+          <div class="metric-value">${active.length}</div>
+          <div class="metric-change">Active in pipeline</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Ready for OTP Handover</div>
+          <div class="metric-value">${pendingHandover.length}</div>
+          <div class="metric-change">Both parties confirmed</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Cold chain</div>
+          <div class="metric-value">✓ Active</div>
+          <div class="metric-change">Safety enforced</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">OTP handoff</div>
+          <div class="metric-value">6-digit</div>
+          <div class="metric-change">Cryptographic transfer</div>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="panel">
+          <div class="section-head">
+            <div>
+              <div class="panel-title">Pickup & Handover Queue</div>
+              <div class="panel-sub">Matches requiring volunteer assignment or OTP confirmation</div>
+            </div>
+            <button class="refresh" onclick="renderDelivery()">⟳ Refresh</button>
+          </div>
+
+          ${active.length ? active.map(m => {
+            const donorName = m.donors?.[0]?.name || "Donor";
+            const recipientName = m.recipient?.name || "Recipient";
+            const carrier = m.delivery?.carrierName || null;
+
+            return `
+              <div class="feed-item" style="margin-bottom:12px;">
+                <div class="feed-icon">↗</div>
+                <div class="feed-info">
+                  <div class="feed-title">
+                    Match #${m.id.slice(0,8)} · ${escapeHtml(donorName)} → ${escapeHtml(recipientName)}
+                  </div>
+                  <div class="feed-meta">
+                    ${m.quantityCoveredKg || 0}kg surplus · Status: <strong>${escapeHtml(m.status)}</strong>
+                    ${carrier ? ` · Volunteer: <strong>${escapeHtml(carrier)}</strong>` : ""}
+                  </div>
+                  ${m.otp ? `
+                    <div style="margin-top:6px;">
+                      <span class="otp-display">OTP: ${escapeHtml(m.otp)}</span>
+                      <span style="color:var(--muted); font-size:11px; margin-left:8px;">Recipient presents this code upon handoff</span>
+                    </div>
+                  ` : ""}
+                </div>
+
+                <div style="display:flex; gap:8px; align-items:center;">
+                  ${!carrier ? `
+                    <button class="secondary-button" style="padding:7px 12px;" onclick="assignPickup('${m.id}')">
+                      Assign Courier
+                    </button>
+                  ` : `
+                    <span style="font-size:12px; color:var(--green); font-weight:600;">✓ Dispatched</span>
+                  `}
+
+                  ${(m.status === 'both_accepted' || m.status === 'dispatched') ? `
+                    <button class="primary-button" style="padding:7px 14px;" onclick="openOtpModal('${m.id}', '${m.otp}')">
+                      Confirm Handover (OTP)
+                    </button>
+                  ` : `
+                    <button class="btn-small btn-accept" onclick="showMatches()">
+                      Review
+                    </button>
+                  `}
+                </div>
+              </div>
+            `;
+          }).join("") : `
+            <div style="text-align:center; padding:32px; color:var(--muted);">
+              <p>No pickups currently waiting.</p>
+              <button class="primary-button" onclick="runMatching()">Run Matching Engine</button>
+            </div>
+          `}
+        </div>
+      </section>
+    `;
+  }
+
+  /* ==========================================================
+     ACTIONS & WORKFLOWS
+  ========================================================== */
+  async function runMatching() {
+    const result = await api("/api/match/run", { method: "POST" });
+    if (result) {
+      showToast(`Matching Engine executed: ${result.proposed} new match(es) proposed`, "success");
+      renderPage(currentPage);
+    }
+  }
+
+  async function recordSurplus() {
+    const donors = await api("/api/donors");
+    if (!donors || !donors.length) {
+      showToast("No registered donors found. Register a donor in the Admin portal first.", "error");
+      return;
+    }
+
+    const donorOptions = donors
+      .map(d => `<option value="${d.id}">${escapeHtml(d.name)} (${d.region}) - ${d.verificationTier}</option>`)
+      .join("");
+
+    const bodyHtml = `
+      <form id="recordSurplusForm" onsubmit="event.preventDefault(); submitSurplus();">
+        <div class="form-group">
+          <label>Donor Organization</label>
+          <select id="surplusDonor" class="form-select" required>
+            ${donorOptions}
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Food Item / Description</label>
+            <input type="text" id="surplusFood" class="form-input" placeholder="e.g. Sourdough Bread Loaves" required />
+          </div>
+          <div class="form-group">
+            <label>Quantity (kg)</label>
+            <input type="number" id="surplusQty" class="form-input" min="1" max="1000" value="30" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Storage Requirement</label>
+            <select id="surplusStorage" class="form-select" onchange="toggleTempRange()">
+              <option value="ambient">Ambient (Room Temp)</option>
+              <option value="chilled">Chilled (Refrigerated)</option>
+              <option value="frozen">Frozen</option>
+            </select>
+          </div>
+          <div class="form-group" id="tempRangeGroup" style="display:none;">
+            <label>Temperature Range</label>
+            <input type="text" id="surplusTemp" class="form-input" placeholder="e.g. 2°C to 5°C" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Expiry Window (hours)</label>
+            <input type="number" id="surplusExpiry" class="form-input" value="18" min="1" required />
+          </div>
+          <div class="form-group">
+            <label>Pickup Window (hours)</label>
+            <input type="number" id="surplusPickup" class="form-input" value="4" min="1" required />
+          </div>
+        </div>
+      </form>
+    `;
+
+    openModal("Record Surplus Food", bodyHtml, submitSurplus, "Record Donation");
+  }
+
+  window.toggleTempRange = function() {
+    const storage = document.getElementById("surplusStorage")?.value;
+    const group = document.getElementById("tempRangeGroup");
+    if (!group) return;
+    if (storage === "chilled") {
+      group.style.display = "block";
+      document.getElementById("surplusTemp").value = "2°C to 5°C";
+    } else if (storage === "frozen") {
+      group.style.display = "block";
+      document.getElementById("surplusTemp").value = "-18°C to -15°C";
+    } else {
+      group.style.display = "none";
+      document.getElementById("surplusTemp").value = "";
+    }
+  };
+
+  async function submitSurplus() {
+    const donorId = document.getElementById("surplusDonor")?.value;
+    const foodType = document.getElementById("surplusFood")?.value.trim();
+    const quantityKg = Number(document.getElementById("surplusQty")?.value);
+    const storageType = document.getElementById("surplusStorage")?.value;
+    const tempRange = document.getElementById("surplusTemp")?.value.trim() || null;
+    const expiryInHours = Number(document.getElementById("surplusExpiry")?.value);
+    const pickupWindowHours = Number(document.getElementById("surplusPickup")?.value);
+
+    if (!donorId || !foodType || !quantityKg) {
+      showToast("Please fill in food item and quantity", "error");
+      return;
+    }
+
+    const res = await api("/api/donations", {
+      method: "POST",
+      body: JSON.stringify({
+        donorId,
+        foodType,
+        quantityKg,
+        storageType,
+        tempRange,
+        expiryInHours,
+        pickupWindowHours
+      })
+    });
+
+    if (res) {
+      showToast(`Logged donation: ${quantityKg}kg ${foodType}`, "success");
+      closeModal();
+      renderPage(currentPage);
+    }
+  }
+
+  async function requestDrop() {
+    const recipients = await api("/api/recipients");
+    if (!recipients || !recipients.length) {
+      showToast("No registered recipients found.", "error");
+      return;
+    }
+
+    const recipientOptions = recipients
+      .map(r => `<option value="${r.id}">${escapeHtml(r.name)} (${r.region})</option>`)
+      .join("");
+
+    const bodyHtml = `
+      <form id="requestDropForm" onsubmit="event.preventDefault(); submitDropRequest();">
+        <div class="form-group">
+          <label>Recipient Organization</label>
+          <select id="dropRecipient" class="form-select" required>
+            ${recipientOptions}
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Food Item Needed</label>
+            <input type="text" id="dropFood" class="form-input" placeholder="e.g. Cooked meals, Bread loaves" required />
+          </div>
+          <div class="form-group">
+            <label>Quantity (kg)</label>
+            <input type="number" id="dropQty" class="form-input" min="1" max="1000" value="30" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Needed Within (hours)</label>
+          <input type="number" id="dropHours" class="form-input" value="6" min="1" required />
+        </div>
+      </form>
+    `;
+
+    openModal("Request a Food Drop", bodyHtml, submitDropRequest, "Submit Request");
+  }
+
+  async function submitDropRequest() {
+    const recipientId = document.getElementById("dropRecipient")?.value;
+    const foodType = document.getElementById("dropFood")?.value.trim();
+    const quantityKg = Number(document.getElementById("dropQty")?.value);
+    const neededByHours = Number(document.getElementById("dropHours")?.value);
+
+    if (!recipientId || !foodType || !quantityKg) {
+      showToast("Please enter food item and quantity", "error");
+      return;
+    }
+
+    const res = await api("/api/demand", {
+      method: "POST",
+      body: JSON.stringify({
+        recipientId,
+        foodType,
+        quantityKg,
+        neededByHours
+      })
+    });
+
+    if (res) {
+      showToast(`Food drop request logged: ${quantityKg}kg ${foodType}`, "success");
+      closeModal();
+      renderPage(currentPage);
+    }
+  }
+
+  async function showMatches() {
+    const matches = await api("/api/matches");
+    const proposed = (matches || []).filter(m => m.status === "proposed");
+
+    if (!proposed.length) {
+      openModal("Proposed Matches", `
+        <p style="color:var(--muted); margin-bottom:16px;">No proposed matches waiting for acceptance.</p>
+        <p>You can run the matching engine to pair existing surplus with open demand requests.</p>
+      `, () => { closeModal(); runMatching(); }, "Run Matching Engine");
+      return;
+    }
+
+    const listHtml = proposed.map(m => `
+      <div style="background:#fbfdfb; border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+          <div>
+            <strong style="font-size:15px;">#${m.id.slice(0,8)} · ${escapeHtml(m.donors?.[0]?.name || 'Donor')} → ${escapeHtml(m.recipient?.name || 'Recipient')}</strong>
+            <div style="color:var(--muted); font-size:12px; margin-top:2px;">
+              Covers ${m.quantityCoveredKg}kg · Score: ${m.score}
+            </div>
+          </div>
+          <span class="status status-blue">Proposed</span>
+        </div>
+        <ul class="reasons-list">
+          ${(m.reasons || []).map(r => `<li>${escapeHtml(r)}</li>`).join("")}
+        </ul>
+        ${m.warnings && m.warnings.length ? `<div class="warning-box">⚠ ${m.warnings.map(escapeHtml).join("<br>⚠ ")}</div>` : ""}
+        <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
+          <button class="btn-small btn-accept" onclick="acceptMatch('${m.id}', 'donor')">
+            ${m.donorAccepted ? '✓ Donor Accepted' : 'Accept (as Donor)'}
+          </button>
+          <button class="btn-small btn-accept" onclick="acceptMatch('${m.id}', 'recipient')">
+            ${m.recipientAccepted ? '✓ Recipient Accepted' : 'Accept (as Recipient)'}
+          </button>
+          <button class="btn-small btn-cancel" onclick="cancelMatchPrompt('${m.id}')">Cancel</button>
+        </div>
+      </div>
+    `).join("");
+
+    openModal("Review Proposed Matches", `
+      <div style="max-height:60vh; overflow-y:auto;">
+        ${listHtml}
+      </div>
+    `, null);
+  }
+
+  async function acceptMatch(matchId, role) {
+    const res = await api(`/api/matches/${matchId}/accept`, {
+      method: "POST",
+      body: JSON.stringify({ role })
+    });
+    if (res) {
+      showToast(`${role === 'donor' ? 'Donor' : 'Recipient'} accepted match #${matchId.slice(0,8)}`, "success");
+      if (res.status === 'both_accepted') {
+        showToast(`Both parties accepted! Handover OTP: ${res.otp}`, "info");
+      }
+      closeModal();
+      renderPage(currentPage);
+    }
+  }
+
+  async function cancelMatchPrompt(matchId) {
+    const reason = prompt("Reason for cancelling match:", "Pickup time incompatible");
+    if (reason === null) return;
+    const res = await api(`/api/matches/${matchId}/cancel`, {
+      method: "POST",
+      body: JSON.stringify({ role: "donor", reason })
+    });
+    if (res) {
+      showToast(`Match #${matchId.slice(0,8)} cancelled`, "info");
+      closeModal();
+      renderPage(currentPage);
+    }
+  }
+
+  async function assignPickup(matchId) {
+    const carrierName = prompt("Volunteer / Courier Name:", "Maya Chen");
+    if (!carrierName) return;
+
+    const res = await api(`/api/matches/${matchId}/dispatch`, {
+      method: "POST",
+      body: JSON.stringify({
+        method: "Volunteer pickup",
+        carrierName
+      })
+    });
+
+    if (res) {
+      showToast(`Volunteer ${carrierName} assigned to match #${matchId.slice(0,8)}`, "success");
+      renderPage(currentPage);
+    }
+  }
+
+  function openOtpModal(matchId, expectedOtp) {
+    const bodyHtml = `
+      <form id="verifyOtpForm" onsubmit="event.preventDefault(); submitVerifyOtp('${matchId}');">
+        <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">
+          Enter the 6-digit OTP provided by the recipient to verify physical custody transfer and complete delivery.
+        </p>
+
+        <div class="form-group">
+          <label>6-Digit Recipient OTP</label>
+          <input type="text" id="otpInput" class="form-input" placeholder="e.g. 123456" value="${expectedOtp || ''}" required maxlength="6" style="font-family:monospace; font-size:18px; letter-spacing:4px; text-align:center;" />
+          <div class="form-hint">Expected OTP for this match: <b>${escapeHtml(expectedOtp || 'Issued upon acceptance')}</b></div>
+        </div>
+
+        <div style="background:#f8fbf9; border:1px solid var(--border); border-radius:10px; padding:14px; margin-top:16px;">
+          <label style="font-weight:650; font-size:12px; margin-bottom:8px; display:block;">Mandatory Safety Checklist</label>
+          <label class="form-check">
+            <input type="checkbox" id="chkVisual" checked required />
+            <span>Visual Inspection Passed (no spoilage, odors, or damage)</span>
+          </label>
+          <label class="form-check">
+            <input type="checkbox" id="chkPackaging" checked required />
+            <span>Packaging Intact & Food Sealed</span>
+          </label>
+          <label class="form-check">
+            <input type="checkbox" id="chkTemp" checked required />
+            <span>Temperature Confirmed (chilled: 2-8°C / frozen: &lt;-15°C)</span>
+          </label>
+        </div>
+      </form>
+    `;
+
+    openModal("Confirm Delivery & Handover", bodyHtml, () => submitVerifyOtp(matchId), "Verify & Transfer Custody");
+  }
+
+  async function submitVerifyOtp(matchId) {
+    const otp = document.getElementById("otpInput")?.value.trim();
+    const visual = document.getElementById("chkVisual")?.checked;
+    const packaging = document.getElementById("chkPackaging")?.checked;
+    const temp = document.getElementById("chkTemp")?.checked;
+
+    if (!otp) {
+      showToast("Please enter the OTP", "error");
+      return;
+    }
+    if (!visual || !packaging || !temp) {
+      showToast("All checklist safety conditions must be verified", "error");
+      return;
+    }
+
+    const res = await api(`/api/matches/${matchId}/verify-otp`, {
+      method: "POST",
+      body: JSON.stringify({
+        otp,
+        checklist: {
+          visualInspectionPassed: visual,
+          packagingIntact: packaging,
+          temperatureConfirmed: temp
+        },
+        gpsPin: "12.9780,79.1500",
+        signature: "recipient-verified-digital"
+      })
+    });
+
+    if (res) {
+      showToast("Handover confirmed! Custody transferred successfully.", "success");
+      closeModal();
+      renderPage(currentPage);
+    }
+  }
+
+  async function verifyDonor(donorId, donorName) {
+    const res = await api(`/api/donors/${donorId}/verify`, {
+      method: "POST",
+      body: JSON.stringify({
+        tier: "institutional",
+        documentName: `${donorId}-fssai-cert.pdf`
+      })
+    });
+    if (res) {
+      showToast(`${donorName || 'Donor'} verified as Institutional tier`, "success");
+      renderPage(currentPage);
+    }
+  }
+
+  async function acceptWaiver(recipientId) {
+    const res = await api(`/api/recipients/${recipientId}/accept-waiver`, {
+      method: "POST",
+      body: JSON.stringify({})
+    });
+    if (res) {
+      showToast("Liability waiver signed successfully", "success");
+      renderPage(currentPage);
+    }
+  }
+
+  function registerDonorModal() {
+    const bodyHtml = `
+      <form id="regDonorForm" onsubmit="event.preventDefault(); submitRegDonor();">
+        <div class="form-group">
+          <label>Donor Organization Name</label>
+          <input type="text" id="regDonorName" class="form-input" placeholder="e.g. Metro Bakery Hub" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Donor Type</label>
+            <select id="regDonorType" class="form-select">
+              <option value="Bakery">Bakery</option>
+              <option value="Caterer">Caterer</option>
+              <option value="Restaurant">Restaurant</option>
+              <option value="Supermarket">Supermarket</option>
+              <option value="Individual">Individual</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Region</label>
+            <select id="regDonorRegion" class="form-select">
+              <option value="North Zone">North Zone</option>
+              <option value="South Zone">South Zone</option>
+              <option value="East Zone">East Zone</option>
+              <option value="West Zone">West Zone</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    `;
+    openModal("Register New Donor", bodyHtml, submitRegDonor, "Register Donor");
+  }
+
+  async function submitRegDonor() {
+    const name = document.getElementById("regDonorName")?.value.trim();
+    const type = document.getElementById("regDonorType")?.value;
+    const region = document.getElementById("regDonorRegion")?.value;
+    if (!name) return showToast("Donor name is required", "error");
+
+    const res = await api("/api/donors", {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        type,
+        region,
+        lat: 12.975 + (Math.random() - 0.5) * 0.02,
+        lng: 79.155 + (Math.random() - 0.5) * 0.02
+      })
+    });
+    if (res) {
+      showToast(`Donor "${name}" registered successfully`, "success");
+      closeModal();
+      renderPage(currentPage);
+    }
+  }
+
+  function registerRecipientModal() {
+    const bodyHtml = `
+      <form id="regRecipForm" onsubmit="event.preventDefault(); submitRegRecip();">
+        <div class="form-group">
+          <label>Recipient Organization Name</label>
+          <input type="text" id="regRecipName" class="form-input" placeholder="e.g. St. Jude Relief Center" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Region</label>
+            <select id="regRecipRegion" class="form-select">
+              <option value="North Zone">North Zone</option>
+              <option value="South Zone">South Zone</option>
+              <option value="East Zone">East Zone</option>
+              <option value="West Zone">West Zone</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Pickup Capacity (kg)</label>
+            <input type="number" id="regRecipCap" class="form-input" value="100" min="10" max="1000" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Storage Capabilities</label>
+          <div style="display:flex; gap:16px; margin-top:6px;">
+            <label class="form-check"><input type="checkbox" id="chkAmbient" checked disabled /> Ambient</label>
+            <label class="form-check"><input type="checkbox" id="chkChilled" checked /> Chilled</label>
+            <label class="form-check"><input type="checkbox" id="chkFrozen" /> Frozen</label>
+          </div>
+        </div>
+      </form>
+    `;
+    openModal("Register New Recipient", bodyHtml, submitRegRecip, "Register Recipient");
+  }
+
+  async function submitRegRecip() {
+    const name = document.getElementById("regRecipName")?.value.trim();
+    const region = document.getElementById("regRecipRegion")?.value;
+    const pickupCapacityKg = Number(document.getElementById("regRecipCap")?.value) || 50;
+    const storageCapability = ["ambient"];
+    if (document.getElementById("chkChilled")?.checked) storageCapability.push("chilled");
+    if (document.getElementById("chkFrozen")?.checked) storageCapability.push("frozen");
+
+    if (!name) return showToast("Recipient name is required", "error");
+
+    const res = await api("/api/recipients", {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        region,
+        storageCapability,
+        pickupCapacityKg,
+        lat: 12.975 + (Math.random() - 0.5) * 0.02,
+        lng: 79.155 + (Math.random() - 0.5) * 0.02
+      })
+    });
+    if (res) {
+      showToast(`Recipient "${name}" registered successfully`, "success");
+      closeModal();
+      renderPage(currentPage);
+    }
+  }
+
+  /* ==========================================================
+     HELPERS & SECURITY
+  ========================================================== */
+  function fmtHours(iso) {
+    if (!iso) return "—";
+    const h = (new Date(iso).getTime() - Date.now()) / 3600000;
+    if (h < 0) return "Expired";
+    return h.toFixed(1) + "h";
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  /* ==========================================================
+     INITIALIZATION
+  ========================================================== */
+  checkBackendHealth();
+  setInterval(checkBackendHealth, 8000);
+  renderPage("subscriber");
+</script>
+
+</body>
+</html>
