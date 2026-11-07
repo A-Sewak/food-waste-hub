@@ -1,28 +1,23 @@
-// server.js
-// ---------------------------------------------------------------------------
-// Zero-dependency Node.js HTTP server.
-// Binds to 0.0.0.0 to guarantee automatic port discovery and URL generation
-// across Codespaces, AWS Cloud9, Docker, and local environments.
-// ---------------------------------------------------------------------------
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { randomUUID, randomInt } from 'node:crypto';
 
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
-const { randomUUID, randomInt } = require('crypto');
-
-const {
+import {
   db,
   id,
   nowIso,
   DONOR_AUTO_PAUSE_RATING_THRESHOLD,
   DONOR_AUTO_PAUSE_RELIABILITY_THRESHOLD,
   CO2E_KG_PER_KG_FOOD_WASTE,
-} = require('./db');
-const { runMatching, expireStaleDonations } = require('./engine');
-const { HIGH_VOLUME_THRESHOLD_KG } = require('./matching');
+} from './db.js';
+import { runMatching, expireStaleDonations } from './engine.js';
+import { HIGH_VOLUME_THRESHOLD_KG } from './matching.js';
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
-const HOST = '0.0.0.0'; // Crucial for cloud port forwarding / auto-detection
+const HOST = '0.0.0.0';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 // ---------------------------------------------------------------------------
@@ -189,7 +184,7 @@ async function handleApi(req, res, pathname) {
     donor.verificationTier = body.tier === 'institutional' ? 'institutional' : 'basic';
     donor.verified = true;
     donor.verificationDoc = body.documentName
-      ? `s3://food-hub-verification-docs/donors/${donor.id}-${body.documentName}`
+      ? `docs/donors/${donor.id}-${body.documentName}`
       : donor.verificationDoc;
     return sendJSON(res, 200, donor);
   }
@@ -386,7 +381,6 @@ async function handleApi(req, res, pathname) {
     return sendJSON(res, 200, match);
   }
 
-  // Multi-party cancellation adaptation
   if ((m = pathname.match(/^\/api\/matches\/([^/]+)\/cancel$/)) && method === 'POST') {
     const match = db.matches.find((x) => x.id === m[1]);
     if (!match) return notFound(res, 'Match not found');
@@ -401,7 +395,6 @@ async function handleApi(req, res, pathname) {
     match.cancelledAt = nowIso();
     match.cancellationReason = reason;
 
-    // Safe Stock Release
     const now = Date.now();
     const affectedDonations = db.donations.filter((d) => match.donationIds.includes(d.id));
     affectedDonations.forEach((d) => {
@@ -424,7 +417,6 @@ async function handleApi(req, res, pathname) {
       }
     });
 
-    // Notify affected parties
     const recipient = db.recipients.find((r) => r.id === match.recipientId);
     const carrier = match.delivery ? match.delivery.carrierName : null;
 
@@ -450,7 +442,6 @@ async function handleApi(req, res, pathname) {
       `Match cancelled post-acceptance. Reason: ${reason}. Recipient: ${recipient ? recipient.name : 'N/A'}. Courier: ${carrier || 'None'}.`
     );
 
-    // Replacement Surplus Discovery
     const replacementMatches = runMatching(db);
     const replacementFound = replacementMatches.find((rm) => rm.demandRequestId === match.demandRequestId) || null;
 
@@ -520,7 +511,7 @@ async function handleApi(req, res, pathname) {
 }
 
 // ---------------------------------------------------------------------------
-// Server Initialization with Explicit 0.0.0.0 Host
+// Server Initialization
 // ---------------------------------------------------------------------------
 
 const server = http.createServer(async (req, res) => {
@@ -537,7 +528,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`Food Waste Hub operational!`);
-  console.log(`- Local URL: http://localhost:${PORT}`);
-  console.log(`- Network URL: http://172.16.248.52:${PORT}`);
+  console.log(`Food Waste Hub operational: http://localhost:${PORT}`);
 });

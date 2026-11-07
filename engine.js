@@ -1,17 +1,7 @@
-// engine.js
-// ---------------------------------------------------------------------------
-// Orchestrates the matching run: for every open demand request, finds
-// feasible donations, batch-aggregates several small donations to cover one
-// request when needed (per the "Batch Aggregation for Real Demand" slide),
-// and proposes a Match record. Donations are locked (status -> 'reserved')
-// the instant a match is proposed, so no other request can claim them --
-// this is the "No double-allocation" guardrail from the deck.
-// ---------------------------------------------------------------------------
+import { randomUUID } from 'node:crypto';
+import { evaluateMatch } from './matching.js';
 
-const { randomUUID } = require('crypto');
-const { evaluateMatch } = require('./matching');
-
-function expireStaleDonations(db) {
+export function expireStaleDonations(db) {
   const now = Date.now();
   db.donations.forEach((d) => {
     if (d.status === 'available' && new Date(d.expiryAt).getTime() <= now) {
@@ -20,7 +10,7 @@ function expireStaleDonations(db) {
   });
 }
 
-function runMatching(db) {
+export function runMatching(db) {
   expireStaleDonations(db);
 
   const newMatches = [];
@@ -50,9 +40,8 @@ function runMatching(db) {
           a.evalResult.distanceKm - b.evalResult.distanceKm
       );
 
-    if (candidates.length === 0) continue; // no compatible donor yet -> stays visible as unmet demand
+    if (candidates.length === 0) continue;
 
-    // Batch-aggregate donations until the request's quantity is covered.
     let accumulated = 0;
     const chosen = [];
     for (const c of candidates) {
@@ -90,7 +79,7 @@ function runMatching(db) {
       score: avgScore,
       reasons,
       warnings,
-      status: 'proposed', // proposed -> donor/recipient accept -> both_accepted -> delivered | cancelled
+      status: 'proposed',
       donorAccepted: false,
       recipientAccepted: false,
       otp: null,
@@ -99,7 +88,6 @@ function runMatching(db) {
       createdAt: new Date().toISOString(),
     };
 
-    // Lock donations immediately -- prevents any other request from claiming them.
     chosen.forEach((c) => {
       c.donation.status = 'reserved';
     });
@@ -119,5 +107,3 @@ function runMatching(db) {
 
   return newMatches;
 }
-
-module.exports = { runMatching, expireStaleDonations };
