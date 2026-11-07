@@ -1,18 +1,10 @@
-// matching.js
-// ---------------------------------------------------------------------------
-// The explainable matching engine. In production this logic runs inside the
-// "Explainable Matching Engine" AWS Lambda from the architecture diagram,
-// triggered by EventBridge on new donation/demand events, using Amazon
-// Location Service for real distance calculation instead of haversine.
-// ---------------------------------------------------------------------------
-
-const HIGH_VOLUME_THRESHOLD_KG = 30; // above this, institutional verification is required
+export const HIGH_VOLUME_THRESHOLD_KG = 30;
 
 function toRad(d) {
   return (d * Math.PI) / 180;
 }
 
-function haversineKm(lat1, lng1, lat2, lng2) {
+export function haversineKm(lat1, lng1, lat2, lng2) {
   const R = 6371;
   const dLat = toRad(lat2 - lat1);
   const dLng = toRad(lng2 - lng1);
@@ -26,12 +18,7 @@ function hoursUntil(iso) {
   return (new Date(iso).getTime() - Date.now()) / 3600000;
 }
 
-/**
- * Evaluate one donation against one demand request.
- * Returns feasibility (hard guardrails), a score, and human-readable
- * reasons/warnings -- mirroring the "Proposed Match" card in the deck.
- */
-function evaluateMatch(donation, demand, donor, recipient) {
+export function evaluateMatch(donation, demand, donor, recipient) {
   const reasons = [];
   const warnings = [];
   const blockers = [];
@@ -93,9 +80,9 @@ function evaluateMatch(donation, demand, donor, recipient) {
 
   let score = 0;
   if (feasible) {
-    score += Math.max(0, 40 - distanceKm * 2); // closer is better, up to 40 pts
-    score += Math.min(30, hrsToExpiry); // more time left is better, up to 30 pts
-    score += donor.reliabilityScore * 0.2; // up to 20 pts
+    score += Math.max(0, 40 - distanceKm * 2);
+    score += Math.min(30, hrsToExpiry);
+    score += donor.reliabilityScore * 0.2;
     score += Math.min(10, (donation.quantityKg / Math.max(demand.quantityKg, 1)) * 10);
   }
 
@@ -109,5 +96,3 @@ function evaluateMatch(donation, demand, donor, recipient) {
     hrsToExpiry,
   };
 }
-
-module.exports = { haversineKm, evaluateMatch, HIGH_VOLUME_THRESHOLD_KG };
